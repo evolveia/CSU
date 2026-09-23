@@ -1,11 +1,15 @@
 import { SupportedLang } from '../types';
 
 export const LANGUAGES = [
-  { code: 'FR', label: 'Français', native: 'Français' },
-  { code: 'LN', label: 'Lingála', native: 'Lingála' },
-  { code: 'SW', label: 'Kiswahili', native: 'Kiswahili' },
-  { code: 'KG', label: 'Kikongo', native: 'Kikongo' },
-  { code: 'TSH', label: 'Tshiluba', native: 'Tshiluba' },
+  { code: 'FR', label: 'Français', native: 'Français', flag: '🇫🇷' },
+  { code: 'LN', label: 'Lingála', native: 'Lingála', flag: '🇨🇩' },
+  { code: 'SW', label: 'Kiswahili', native: 'Kiswahili', flag: '🇹🇿' },
+  { code: 'KG', label: 'Kikongo', native: 'Kikongo', flag: '🇨🇩' },
+  { code: 'TSH', label: 'Tshiluba', native: 'Tshiluba', flag: '🇨🇩' },
+  { code: 'EN', label: 'English', native: 'English', flag: '🇬🇧' },
+  { code: 'ES', label: 'Español', native: 'Español', flag: '🇪🇸' },
+  { code: 'PT', label: 'Português', native: 'Português', flag: '🇵🇹' },
+  { code: 'ZH', label: '中文 (Chinois)', native: '中文', flag: '🇨🇳' },
 ] as const;
 
 export const translations: Record<SupportedLang, {
@@ -252,6 +256,170 @@ export const translations: Record<SupportedLang, {
       officialService: "Ditunga dia Kongu wa Munginda · CSU",
       dataSovereignty: "Malu masokoka mu RDC — bukalenga bua tekinoloji",
       lawCitation: "Bilondeshile Mukenji n° 09/001 wa dituku 10/01/2009 bua bukubi bua bantu.",
+    }
+  },
+  EN: {
+    topBarOfficial: "Government of the DRC — Official Public Service",
+    accessibility: "Accessibility & Contrasts",
+    nav: {
+      home: "Home",
+      whatIs: "The CSU",
+      benefits: "Benefits",
+      stations: "Citizenship Stations",
+      govAccount: "Gov Account",
+      help: "Help & FAQ",
+      enter: "Sign In",
+    },
+    hero: {
+      slide1: {
+        title: "The census giving an official identity and sovereign rights to every Congolese",
+        subtitle: "With the CSU, you count for the State: healthcare, education, social protection and direct aid reach those truly in need — even without prior identity documents.",
+        ctaPrimary: "Register now",
+        ctaSecondary: "Learn how it works",
+      },
+      slide2: {
+        title: "Close to you: Citizenship Stations and mobile units across all 26 provinces",
+        subtitle: "Free, dignified, and local civic reception. No internet connection? No issue: offline biometric census with GPS geolocation and cryptographic sync.",
+        ctaPrimary: "Find the nearest station",
+        ctaSecondary: "Check mobile team routes",
+      },
+      slide3: {
+        title: "Your Gov Account: your data and social benefits in your pocket",
+        subtitle: "Check your national CSU number, track mobile money disbursements and authorize data usage with total transparency.",
+        ctaPrimary: "Access my Gov Account",
+        ctaSecondary: "Activate my registration",
+      },
+    },
+    common: {
+      loading: "Loading...",
+      retry: "Try again",
+      back: "Go back",
+      officialService: "Democratic Republic of the Congo · Unified Social Registry",
+      dataSovereignty: "Data sovereignly hosted in the DRC — Digital Sovereignty",
+      lawCitation: "In accordance with Law No. 09/001 of 10/01/2009 on personal data and citizen identity protection.",
+    }
+  },
+  ES: {
+    topBarOfficial: "Gobierno de la RDC — Servicio Oficial",
+    accessibility: "Accesibilidad y Contrastes",
+    nav: {
+      home: "Inicio",
+      whatIs: "El CSU",
+      benefits: "Beneficios",
+      stations: "Estaciones de Ciudadanía",
+      govAccount: "Cuenta Gov",
+      help: "Ayuda y FAQ",
+      enter: "Entrar",
+    },
+    hero: {
+      slide1: {
+        title: "El censo que otorga un nombre y derechos a cada ciudadano congoleño",
+        subtitle: "Con el CSU, usted existe para el Estado: salud, educación, protección social y transferencias llegan a quienes realmente lo necesitan — incluso sin documentos previos.",
+        ctaPrimary: "Inscribirme ahora",
+        ctaSecondary: "Ver cómo funciona",
+      },
+      slide2: {
+        title: "Cerca de usted: Estaciones de Ciudadanía y unidades móviles en las 26 provincias",
+        subtitle: "Atención de proximidad, gratuita y digna. ¿Sin internet? Ningún problema: censo biométrico fuera de línea con geolocalización y sincronización segura.",
+        ctaPrimary: "Encontrar la estación más cercana",
+        ctaSecondary: "Ver rutas de brigadas móviles",
+      },
+      slide3: {
+        title: "Su Cuenta Gov: sus datos y sus beneficios en su bolsillo",
+        subtitle: "Consulte su número CSU nacional, supervise sus cobros por dinero móvil y autorice el uso de sus datos con total transparencia.",
+        ctaPrimary: "Acceder a mi Cuenta Gov",
+        ctaSecondary: "Activar mi registro",
+      },
+    },
+    common: {
+      loading: "Cargando...",
+      retry: "Reintentar",
+      back: "Volver",
+      officialService: "República Democrática del Congo · Registro Social Unificado",
+      dataSovereignty: "Datos alojados soberanamente en la RDC — Soberanía Digital",
+      lawCitation: "Conforme a la Ley n° 09/001 del 10/01/2009 sobre protección de datos e identidad ciudadana.",
+    }
+  },
+  PT: {
+    topBarOfficial: "Governo da RDC — Serviço Oficial",
+    accessibility: "Acessibilidade & Contrastes",
+    nav: {
+      home: "Início",
+      whatIs: "O CSU",
+      benefits: "Benefícios",
+      stations: "Estações Cidadania",
+      govAccount: "Conta Gov",
+      help: "Ajuda & FAQ",
+      enter: "Entrar",
+    },
+    hero: {
+      slide1: {
+        title: "O recenseamento que garante um nome e direitos a cada cidadão congolês",
+        subtitle: "Com o CSU, você existe para o Estado: saúde, escola, proteção social e auxílios chegam a quem realmente precisa — mesmo sem documentos prévios.",
+        ctaPrimary: "Quero me cadastrar",
+        ctaSecondary: "Veja como funciona",
+      },
+      slide2: {
+        title: "Perto de você: Estações Cidadania e unidades móveis nas 26 províncias",
+        subtitle: "Atendimento de proximidade, gratuito e humanizado. Sem internet? Sem problemas: cadastramento offline com geolocalização e sincronização segura.",
+        ctaPrimary: "Buscar estação mais próxima",
+        ctaSecondary: "Ver rotas das unidades móveis",
+      },
+      slide3: {
+        title: "Sua Conta Gov: seus dados e benefícios na palma da mão",
+        subtitle: "Consulte seu número CSU nacional, acompanhe pagamentos via mobile money e autorize o uso dos seus dados com total transparência.",
+        ctaPrimary: "Acessar minha Conta Gov",
+        ctaSecondary: "Ativar meu cadastro",
+      },
+    },
+    common: {
+      loading: "Carregando...",
+      retry: "Tentar novamente",
+      back: "Voltar",
+      officialService: "República Democrática do Congo · Registro Social Unificado",
+      dataSovereignty: "Dados hospedados soberanamente na RDC — Soberania Digital",
+      lawCitation: "Em conformidade com a Lei nº 09/001 de 10/01/2009 sobre proteção de dados e identidade cidadã.",
+    }
+  },
+  ZH: {
+    topBarOfficial: "刚果（金）政府 — 官方公共服务",
+    accessibility: "无障碍与高对比度",
+    nav: {
+      home: "首页",
+      whatIs: "认识CSU",
+      benefits: "社会权益",
+      stations: "公民登记站",
+      govAccount: "政府通行证",
+      help: "帮助中心",
+      enter: "登录系统",
+    },
+    hero: {
+      slide1: {
+        title: "赋予每一位刚果公民合法身份与国家基本权益的社会普查",
+        subtitle: "加入统一社会登记簿（CSU），让国家看见您：医疗救助、免费教育与精准现金补贴直达真正需要的人群 — 即使目前暂无前置身份凭证。",
+        ctaPrimary: "立即登记建档",
+        ctaSecondary: "了解办理流程",
+      },
+      slide2: {
+        title: "服务就在身边：覆盖全国26个省的公民登记大厅与巡回服务车队",
+        subtitle: "家门口的暖心服务，全程免费。身处无网络偏远林区？不用担心：支持全离线高精度生物特征采集，通过加密硬件安全同步。",
+        ctaPrimary: "查询就近登记网点",
+        ctaSecondary: "查看流动服务队行进路线",
+      },
+      slide3: {
+        title: "您的政府通行证：专属社会权益与补贴资金随时随地一键查阅",
+        subtitle: "随时查询您的CSU终身唯一编码，实时跟踪移动钱包资金发放进度，全透明自主掌控个人数据授权。",
+        ctaPrimary: "进入我的政府通行证",
+        ctaSecondary: "激活我的身份登记",
+      },
+    },
+    common: {
+      loading: "正在安全加载中...",
+      retry: "重新尝试",
+      back: "返回上一页",
+      officialService: "刚果民主共和国 · 统一社会与经济登记簿（CSU）",
+      dataSovereignty: "数据安全存储于刚果（金）境内 — 国家数字数据主权保障",
+      lawCitation: "依据刚果民主共和国2009年1月10日第09/001号《个人数据与公民身份保护法》。"
     }
   }
 };

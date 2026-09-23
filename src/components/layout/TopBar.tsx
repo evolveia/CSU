@@ -111,32 +111,35 @@ export const TopBar: React.FC<TopBarProps> = ({
                   role="listbox"
                 >
                   <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">
-                    Langues Nationales
+                    Langues Disponibles ({LANGUAGES.length})
                   </div>
-                  {LANGUAGES.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        onLanguageChange(lang.code);
-                        setLangOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between px-3 py-1.5 text-xs text-left transition-colors ${
-                        currentLang === lang.code
-                          ? 'bg-[#0E3A66] text-white font-bold'
-                          : 'text-[#DCE4EE] hover:bg-[#0A2E52] hover:text-white'
-                      }`}
-                      role="option"
-                      aria-selected={currentLang === lang.code}
-                    >
-                      <span>
-                        <span className="font-mono font-bold mr-1.5 text-[#C9A227]">{lang.code}</span>
-                        {lang.label}
-                      </span>
-                      {currentLang === lang.code && (
-                        <Check className="w-3.5 h-3.5 text-[#C9A227]" />
-                      )}
-                    </button>
-                  ))}
+                  <div className="max-h-64 overflow-y-auto divide-y divide-[#14477E]/30">
+                    {LANGUAGES.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          onLanguageChange(lang.code);
+                          setLangOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition-colors cursor-pointer ${
+                          currentLang === lang.code
+                            ? 'bg-[#0E3A66] text-white font-bold'
+                            : 'text-[#DCE4EE] hover:bg-[#0A2E52] hover:text-white'
+                        }`}
+                        role="option"
+                        aria-selected={currentLang === lang.code}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span className="text-sm">{lang.flag}</span>
+                          <span className="font-mono font-bold text-[#C9A227]">{lang.code}</span>
+                          <span>{lang.native}</span>
+                        </span>
+                        {currentLang === lang.code && (
+                          <Check className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </>
             )}

@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { SupportedLang, ToastMessage, AdminProfile } from './types';
+import { applyDomTranslations } from './i18n/translationEngine';
 import { TopBar } from './components/layout/TopBar';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
@@ -38,9 +39,22 @@ export default function App() {
   const [quotaExceeded, setQuotaExceeded] = useState(false);
 
   // Language & Accessibility State
-  const [currentLang, setCurrentLang] = useState<SupportedLang>('FR');
+  const [currentLang, setCurrentLang] = useState<SupportedLang>(() => {
+    const saved = localStorage.getItem('csu_lang') as SupportedLang;
+    return saved || 'FR';
+  });
   const [isHighContrast, setIsHighContrast] = useState(false);
   const [fontScale, setFontScale] = useState(1);
+
+  const handleLanguageChange = (lang: SupportedLang) => {
+    setCurrentLang(lang);
+    localStorage.setItem('csu_lang', lang);
+    applyDomTranslations(lang);
+  };
+
+  useEffect(() => {
+    applyDomTranslations(currentLang);
+  }, [currentLang, currentRoute]);
 
   // Loading indicator & Toasts
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -171,7 +185,7 @@ export default function App() {
       {/* 3. Global Government TopBar */}
       <TopBar
         currentLang={currentLang}
-        onLanguageChange={setCurrentLang}
+        onLanguageChange={handleLanguageChange}
         isHighContrast={isHighContrast}
         onToggleHighContrast={() => setIsHighContrast(!isHighContrast)}
         fontScale={fontScale}
@@ -210,6 +224,8 @@ export default function App() {
           <ProfileRouter
             initialProfile={authenticatedProfile}
             citizenData={citizenSession}
+            currentLang={currentLang}
+            onLanguageChange={handleLanguageChange}
             onLogout={handleLogout}
             onNavigateHome={() => navigateTo('#/')}
           />

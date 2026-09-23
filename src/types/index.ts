@@ -1,9 +1,10 @@
-export type SupportedLang = 'FR' | 'LN' | 'SW' | 'KG' | 'TSH';
+export type SupportedLang = 'FR' | 'LN' | 'SW' | 'KG' | 'TSH' | 'EN' | 'ES' | 'PT' | 'ZH';
 
 export interface LangOption {
   code: SupportedLang;
   label: string;
   native: string;
+  flag?: string;
 }
 
 export type AdminProfileId =

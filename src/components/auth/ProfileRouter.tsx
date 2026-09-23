@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { AdminProfile, RoleType } from '../../types';
+import { AdminProfile, RoleType, SupportedLang } from '../../types';
+import { LANGUAGES } from '../../i18n/translations';
+import { getProfileI18n, translateText } from '../../i18n/translationEngine';
 import { CsuLogo } from '../brand/CsuLogo';
 import { CsuIdCard } from '../common/CsuIdCard';
 import { CitizenPlatform } from '../citizen/CitizenPlatform';
 import { AdminPlatform } from '../admin/AdminPlatform';
+import { DashboardOverview } from '../admin/DashboardOverview';
 import {
   Shield,
   User,
@@ -25,11 +28,17 @@ import {
   Sliders,
   DollarSign,
   Activity,
+  BarChart3,
+  LayoutDashboard,
+  Globe,
+  Check,
 } from 'lucide-react';
 
 interface ProfileRouterProps {
   initialProfile?: AdminProfile | null;
   citizenData?: { name: string; csuNumber: string } | null;
+  currentLang?: SupportedLang;
+  onLanguageChange?: (lang: SupportedLang) => void;
   onLogout: () => void;
   onNavigateHome: () => void;
 }
@@ -214,9 +223,24 @@ const ROLE_DEFINITIONS: RoleDefinition[] = [
   },
 ];
 
+const STRATEGIC_ROLES: RoleType[] = [
+  'gestor_nacional',
+  'gestor_nac',
+  'coordenador_provincial',
+  'coordenador_municipal',
+  'gestor_programas_sociais',
+  'gestor_prog',
+  'auditor',
+  'supervisor',
+  'administrador_sistema',
+  'admin_sys',
+];
+
 export const ProfileRouter: React.FC<ProfileRouterProps> = ({
   initialProfile,
   citizenData,
+  currentLang = 'FR',
+  onLanguageChange,
   onLogout,
   onNavigateHome,
 }) => {
@@ -225,8 +249,22 @@ export const ProfileRouter: React.FC<ProfileRouterProps> = ({
     initialProfile?.role || (citizenData ? 'citoyen' : 'supervisor')
   );
 
-  const currentRoleDef =
+  // Language dropdown open state
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+
+  // View mode switcher: Workspace Modules vs. Recharts Dashboard Overview
+  const [viewMode, setViewMode] = useState<'platform' | 'dashboard_overview'>('platform');
+
+  const baseRoleDef =
     ROLE_DEFINITIONS.find((r) => r.type === selectedRoleType) || ROLE_DEFINITIONS[0];
+
+  const currentRoleDef = getProfileI18n(selectedRoleType, currentLang, {
+    title: baseRoleDef.title,
+    badge: baseRoleDef.badge,
+    description: baseRoleDef.description,
+  });
+
+  const isStrategic = STRATEGIC_ROLES.includes(selectedRoleType);
 
   return (
     <div className="min-h-screen bg-[#F6F8FB] text-[#08243F]">
@@ -236,23 +274,87 @@ export const ProfileRouter: React.FC<ProfileRouterProps> = ({
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#1E8E5A] animate-pulse" />
             <span className="font-mono text-xs font-bold text-[#D9B84A] uppercase tracking-wider">
-              Mode Démonstration · 14 Profils Homologués :
+              {translateText('Mode Démonstration · 14 Profils Homologués :', currentLang)}
             </span>
           </div>
 
-          {/* 14 Profiles Dropdown */}
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          {/* 14 Profiles Dropdown + Language Selector */}
+          <div className="flex items-center gap-2 w-full md:w-auto flex-wrap justify-end">
             <select
               value={selectedRoleType}
               onChange={(e) => setSelectedRoleType(e.target.value as RoleType)}
-              className="bg-[#0A2E52] border border-[#C9A227] rounded-xl px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#C9A227] cursor-pointer"
+              className="bg-[#0A2E52] border border-[#C9A227] rounded-xl px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#C9A227] cursor-pointer max-w-[260px] truncate"
             >
-              {ROLE_DEFINITIONS.map((r, idx) => (
-                <option key={r.type} value={r.type}>
-                  {idx + 1}. {r.title}
-                </option>
-              ))}
+              {ROLE_DEFINITIONS.map((r, idx) => {
+                const tr = getProfileI18n(r.type, currentLang, {
+                  title: r.title,
+                  badge: r.badge,
+                  description: r.description,
+                });
+                return (
+                  <option key={r.type} value={r.type}>
+                    {idx + 1}. {tr.title}
+                  </option>
+                );
+              })}
             </select>
+
+            {/* Language Selector */}
+            {onLanguageChange && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-[#0A2E52] hover:bg-[#0E3A66] border border-[#C9A227]/50 text-white text-xs font-bold transition-all cursor-pointer"
+                  title="Changer de langue / Change Language"
+                >
+                  <Globe className="w-3.5 h-3.5 text-[#C9A227]" />
+                  <span>{currentLang}</span>
+                  <span className="text-[10px] text-[#DCE4EE]/70 hidden sm:inline">
+                    ({LANGUAGES.find((l) => l.code === currentLang)?.native})
+                  </span>
+                </button>
+
+                {langDropdownOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-30"
+                      onClick={() => setLangDropdownOpen(false)}
+                      aria-hidden="true"
+                    />
+                    <div className="absolute right-0 mt-1.5 w-48 rounded-xl bg-[#08243F] border border-[#C9A227] shadow-2xl py-1.5 z-50 max-h-72 overflow-y-auto divide-y divide-[#14477E]/40">
+                      <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">
+                        Idiomas / Langues ({LANGUAGES.length})
+                      </div>
+                      {LANGUAGES.map((lang) => (
+                        <button
+                          key={lang.code}
+                          type="button"
+                          onClick={() => {
+                            onLanguageChange(lang.code);
+                            setLangDropdownOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition-colors cursor-pointer ${
+                            currentLang === lang.code
+                              ? 'bg-[#0E3A66] text-white font-bold'
+                              : 'text-[#DCE4EE] hover:bg-[#0A2E52] hover:text-white'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span className="text-sm">{lang.flag}</span>
+                            <span className="font-mono font-bold text-[#C9A227]">{lang.code}</span>
+                            <span>{lang.native}</span>
+                          </span>
+                          {currentLang === lang.code && (
+                            <Check className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
 
             <button
               onClick={onLogout}
@@ -260,11 +362,69 @@ export const ProfileRouter: React.FC<ProfileRouterProps> = ({
               title="Quitter la session"
             >
               <LogOut className="w-3.5 h-3.5" />
-              <span>Quitter</span>
+              <span>{translateText('Quitter', currentLang)}</span>
             </button>
           </div>
         </div>
       </div>
+
+      {/* Strategic Operational Bar for Administrative Profiles */}
+      {selectedRoleType !== 'citoyen' && (
+        <div className="bg-[#0E3A66] border-b border-[#14477E] px-4 py-2.5 shadow-sm">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-bold text-[#E9CE7A] uppercase tracking-wider font-mono">
+                Profil CSU :
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full bg-[#08243F] text-white font-semibold border border-[#C9A227]/40">
+                {currentRoleDef.badge}
+              </span>
+              {isStrategic && (
+                <span className="px-2 py-0.5 rounded-full bg-[#C9A227]/20 text-[#D9B84A] font-bold text-[10px] uppercase font-mono">
+                  ★ Profil Décisionnel Stratégique
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              {/* Toggle: Full Platform vs. Strategic Recharts Dashboard */}
+              <div className="bg-[#08243F] p-1 rounded-xl border border-[#C9A227]/40 flex items-center gap-1 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('platform')}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                    viewMode === 'platform'
+                      ? 'bg-[#C9A227] text-[#08243F] shadow'
+                      : 'text-white/80 hover:text-white'
+                  }`}
+                >
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  <span>Módulos de Trabalho</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('dashboard_overview')}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                    viewMode === 'dashboard_overview'
+                      ? 'bg-[#C9A227] text-[#08243F] shadow'
+                      : 'text-white/80 hover:text-white'
+                  }`}
+                >
+                  <BarChart3 className="w-3.5 h-3.5" />
+                  <span>Visão Geral do Painel (Recharts)</span>
+                </button>
+              </div>
+
+              <button
+                onClick={onNavigateHome}
+                className="px-3 py-1.5 rounded-xl bg-[#0A2E52] hover:bg-[#14477E] text-xs font-semibold text-[#DCE4EE] border border-[#14477E] transition-colors cursor-pointer shrink-0"
+              >
+                Portail Public
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 2. Platform Content Router based on Selected Role */}
       {selectedRoleType === 'citoyen' ? (
@@ -310,11 +470,47 @@ export const ProfileRouter: React.FC<ProfileRouterProps> = ({
             onLogout={onLogout}
           />
         </main>
+      ) : viewMode === 'dashboard_overview' ? (
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-[#DCE4EE] shadow-sm">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-[#08243F] text-[#D9B84A] font-mono text-xs font-bold uppercase">
+                  {currentRoleDef.badge}
+                </span>
+                <span className="text-xs text-[#0A1B2A]/60 font-mono">
+                  Vue Analytique Recharts
+                </span>
+              </div>
+              <h2 className="font-display font-extrabold text-xl text-[#08243F] mt-1">
+                {currentRoleDef.title} · Tableau de Bord Analytique
+              </h2>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setViewMode('platform')}
+              className="px-4 py-2 rounded-xl bg-[#08243F] hover:bg-[#0E3A66] text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2 shadow"
+            >
+              <LayoutDashboard className="w-4 h-4 text-[#C9A227]" />
+              <span>Ouvrir la Console des Módulos</span>
+            </button>
+          </div>
+
+          <DashboardOverview
+            roleType={selectedRoleType}
+            title={`Visão Geral do Painel · ${currentRoleDef.title}`}
+            subtitle={currentRoleDef.description}
+            onNavigateToRecords={() => setViewMode('platform')}
+          />
+        </main>
       ) : (
         <AdminPlatform
           roleType={selectedRoleType}
           roleTitle={currentRoleDef.title}
           roleBadge={currentRoleDef.badge}
+          currentLang={currentLang}
+          onLanguageChange={onLanguageChange}
           onLogout={onLogout}
           onNavigateHome={onNavigateHome}
         />

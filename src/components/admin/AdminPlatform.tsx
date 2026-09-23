@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { RoleType } from '../../types';
+import { RoleType, SupportedLang } from '../../types';
+import { LANGUAGES } from '../../i18n/translations';
+import { translateText } from '../../i18n/translationEngine';
 import { CsuLogo } from '../brand/CsuLogo';
 import { CsuInteractiveMap } from '../common/CsuInteractiveMap';
 import { MOCK_STATIONS } from '../../services/stationsService';
@@ -54,7 +56,23 @@ import {
   Phone,
   Home,
   Briefcase,
+  Server,
+  KeyRound,
+  FileCheck,
+  Code,
+  LifeBuoy,
+  CreditCard,
+  Globe,
 } from 'lucide-react';
+import { NationalManagerView } from './views/NationalManagerView';
+import { SysAdminView } from './views/SysAdminView';
+import { DpoPrivacyView } from './views/DpoPrivacyView';
+import { AuditorView } from './views/AuditorView';
+import { SocialProgramsView } from './views/SocialProgramsView';
+import { BenefitsOperatorView } from './views/BenefitsOperatorView';
+import { DeveloperIntegratorView } from './views/DeveloperIntegratorView';
+import { TechSupportView } from './views/TechSupportView';
+import { DashboardOverview } from './DashboardOverview';
 
 interface CitizenRecord {
   id: string;
@@ -85,6 +103,8 @@ interface AdminPlatformProps {
   roleType: RoleType;
   roleTitle: string;
   roleBadge: string;
+  currentLang?: SupportedLang;
+  onLanguageChange?: (lang: SupportedLang) => void;
   onLogout: () => void;
   onNavigateHome: () => void;
 }
@@ -99,20 +119,71 @@ type AdminModule =
   | 'metas_fraude'
   | 'relatorios'
   | 'mensagens'
-  | 'configuracoes';
+  | 'configuracoes'
+  | 'gestor_nacional'
+  | 'sys_admin'
+  | 'dpo_privacy'
+  | 'auditoria'
+  | 'programas_sociais'
+  | 'operador_beneficios'
+  | 'dev_integrador'
+  | 'suporte_tecnico';
 
 export const AdminPlatform: React.FC<AdminPlatformProps> = ({
   roleType,
   roleTitle,
   roleBadge,
+  currentLang = 'FR',
+  onLanguageChange,
   onLogout,
   onNavigateHome,
 }) => {
+  // Language dropdown in admin header
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+
   // Sidebar expand / collapse state
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Active module
-  const [activeModule, setActiveModule] = useState<AdminModule>('dashboard');
+  // Active module initialized based on role
+  const getDefaultModuleForRole = (role: RoleType): AdminModule => {
+    switch (role) {
+      case 'gestor_nacional':
+      case 'gestor_nac':
+        return 'gestor_nacional';
+      case 'administrador_sistema':
+      case 'admin_sys':
+        return 'sys_admin';
+      case 'oficial_protecao_dados':
+      case 'dpo_priv':
+        return 'dpo_privacy';
+      case 'auditor':
+        return 'auditoria';
+      case 'gestor_programas_sociais':
+      case 'gestor_prog':
+        return 'programas_sociais';
+      case 'operador_beneficios':
+      case 'op_beneficios':
+        return 'operador_beneficios';
+      case 'integrador_dev':
+      case 'dev_api':
+        return 'dev_integrador';
+      case 'suporte_tecnico':
+      case 'suporte_tec':
+        return 'suporte_tecnico';
+      default:
+        return 'dashboard';
+    }
+  };
+
+  const [activeModule, setActiveModule] = useState<AdminModule>(getDefaultModuleForRole(roleType));
+
+  // Sync active module when role changes in demo mode
+  useEffect(() => {
+    setActiveModule(getDefaultModuleForRole(roleType));
+  }, [roleType]);
+
+  // Dashboard Tab state: Analytics (Recharts) vs Operations
+  const [dashboardTab, setDashboardTab] = useState<'analytics' | 'operations'>('analytics');
 
   // Offline Mode & Local Queue State
   const [isOffline, setIsOffline] = useState(false);
@@ -361,10 +432,60 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
 
   // Module authorization matrix
   const availableModules: { id: AdminModule; label: string; icon: React.FC<{ className?: string }> }[] = useMemo(() => {
-    const list: { id: AdminModule; label: string; icon: React.FC<{ className?: string }> }[] = [
-      { id: 'dashboard', label: 'Vue d’Ensemble', icon: LayoutDashboard },
-      { id: 'cadastros', label: 'Gestion des Dossiers (CRUD)', icon: Users },
-    ];
+    const list: { id: AdminModule; label: string; icon: React.FC<{ className?: string }> }[] = [];
+
+    // Profile 7: Gestor Nacional
+    if (roleType === 'gestor_nacional' || roleType === 'gestor_nac') {
+      list.push({ id: 'gestor_nacional', label: 'Gouvernance Nationale', icon: ShieldCheck });
+    }
+
+    // Profile 8: Administrador de Sistema
+    if (roleType === 'administrador_sistema' || roleType === 'admin_sys') {
+      list.push({ id: 'sys_admin', label: 'Console Technique & Infra', icon: Server });
+    }
+
+    // Profile 9: DPO / Privacidade
+    if (roleType === 'oficial_protecao_dados' || roleType === 'dpo_priv') {
+      list.push({ id: 'dpo_privacy', label: 'Protection des Données (DPO)', icon: ShieldAlert });
+    }
+
+    // Profile 10: Auditor
+    if (roleType === 'auditor') {
+      list.push({ id: 'auditoria', label: 'Audit Républicain (IGF)', icon: FileCheck });
+    }
+
+    // Profile 11: Gestor de Programas Sociais
+    if (roleType === 'gestor_programas_sociais' || roleType === 'gestor_prog') {
+      list.push({ id: 'programas_sociais', label: 'Programmes Sociaux & PMT', icon: Layers });
+    }
+
+    // Profile 12: Operador de Benefícios
+    if (roleType === 'operador_beneficios' || roleType === 'op_beneficios') {
+      list.push({ id: 'operador_beneficios', label: 'Prestations & Décaissements', icon: CreditCard });
+    }
+
+    // Profile 13: Integrador / Desenvolvedor
+    if (roleType === 'integrador_dev' || roleType === 'dev_api') {
+      list.push({ id: 'dev_integrador', label: 'APIs, Sandbox & Swagger', icon: Code });
+    }
+
+    // Profile 14: Suporte Técnico
+    if (roleType === 'suporte_tecnico' || roleType === 'suporte_tec') {
+      list.push({ id: 'suporte_tecnico', label: 'Support 108 & Diagnostics', icon: LifeBuoy });
+    }
+
+    // Common Core Modules
+    list.push({ id: 'dashboard', label: 'Vue d’Ensemble', icon: LayoutDashboard });
+
+    // Developer / Integrator does not access real citizen personal data
+    const isDev = roleType === 'integrador_dev' || roleType === 'dev_api';
+    if (!isDev) {
+      list.push({
+        id: 'cadastros',
+        label: roleType === 'auditor' ? 'Dossiers (Lecture Seule)' : 'Gestion des Dossiers (CRUD)',
+        icon: Users,
+      });
+    }
 
     if (['agente_n1', 'agente_n2', 'supervisor'].includes(roleType)) {
       list.push({ id: 'atendimento', label: 'File & Guichet Direct', icon: Clock });
@@ -378,7 +499,9 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
       list.push({ id: 'equipe', label: 'Équipe & Guichets', icon: UserCheck });
     }
 
-    list.push({ id: 'mapa', label: 'Carte & Couverture SIG', icon: MapIcon });
+    if (!isDev) {
+      list.push({ id: 'mapa', label: 'Carte & Couverture SIG', icon: MapIcon });
+    }
 
     if (canViewStrategicDashboards || roleType === 'supervisor') {
       list.push({ id: 'metas_fraude', label: 'Objectifs & Anti-Fraude', icon: ShieldAlert });
@@ -630,8 +753,62 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
           </button>
         </div>
 
-        {/* Right: User Profile & Home Exit */}
+        {/* Right: Language Selector, User Profile & Home Exit */}
         <div className="flex items-center gap-2">
+          {/* Admin Header Language Selector */}
+          {onLanguageChange && (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#0A2E52] hover:bg-[#14477E] border border-[#C9A227]/40 text-xs font-bold text-[#EAEFF5] transition-colors cursor-pointer"
+                title="Changer de langue / Idioma"
+              >
+                <Globe className="w-3.5 h-3.5 text-[#C9A227]" />
+                <span className="font-mono">{currentLang}</span>
+              </button>
+
+              {langDropdownOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setLangDropdownOpen(false)}
+                    aria-hidden="true"
+                  />
+                  <div className="absolute right-0 mt-2 w-48 rounded-xl bg-[#08243F] border border-[#C9A227] shadow-2xl py-1.5 z-50 max-h-72 overflow-y-auto divide-y divide-[#14477E]/40">
+                    <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">
+                      Idiomas / Langues ({LANGUAGES.length})
+                    </div>
+                    {LANGUAGES.map((lang) => (
+                      <button
+                        key={lang.code}
+                        type="button"
+                        onClick={() => {
+                          onLanguageChange(lang.code);
+                          setLangDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition-colors cursor-pointer ${
+                          currentLang === lang.code
+                            ? 'bg-[#0E3A66] text-white font-bold'
+                            : 'text-[#DCE4EE] hover:bg-[#0A2E52] hover:text-white'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span className="text-sm">{lang.flag}</span>
+                          <span className="font-mono font-bold text-[#C9A227]">{lang.code}</span>
+                          <span>{lang.native}</span>
+                        </span>
+                        {currentLang === lang.code && (
+                          <Check className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
           <div className="text-right hidden lg:block">
             <span className="font-bold text-white block text-xs">{roleTitle}</span>
             <span className="text-[10px] text-[#DCE4EE]/70 font-mono">ID: AGT-2026-9041</span>
@@ -642,7 +819,7 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
             onClick={onNavigateHome}
             className="px-2.5 py-1.5 rounded-lg bg-[#0A2E52] hover:bg-[#14477E] text-xs font-semibold text-[#DCE4EE] border border-[#14477E] transition-colors"
           >
-            Portail Public
+            {translateText('Portail Public', currentLang)}
           </button>
 
           <button
@@ -650,7 +827,7 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
             onClick={onLogout}
             className="px-2.5 py-1.5 rounded-lg bg-[#C0392B]/80 hover:bg-[#C0392B] text-xs font-bold text-white transition-colors"
           >
-            Quitter
+            {translateText('Quitter', currentLang)}
           </button>
         </div>
       </header>
@@ -788,8 +965,51 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
                 </div>
               </div>
 
-              {/* Dynamic KPI Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Sub-Tabs: Strategic Recharts Analytics vs Desk & Local Operations */}
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-2.5 rounded-2xl border border-[#DCE4EE] shadow-sm">
+                <div className="flex items-center gap-1.5 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setDashboardTab('analytics')}
+                    className={`px-3.5 py-2 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                      dashboardTab === 'analytics'
+                        ? 'bg-[#08243F] text-white shadow'
+                        : 'text-[#0A1B2A]/70 hover:text-[#08243F] hover:bg-gray-100'
+                    }`}
+                  >
+                    <BarChart3 className="w-4 h-4 text-[#C9A227]" />
+                    <span>Visão Geral Estratégica (Recharts)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDashboardTab('operations')}
+                    className={`px-3.5 py-2 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                      dashboardTab === 'operations'
+                        ? 'bg-[#08243F] text-white shadow'
+                        : 'text-[#0A1B2A]/70 hover:text-[#08243F] hover:bg-gray-100'
+                    }`}
+                  >
+                    <Clock className="w-4 h-4 text-[#C9A227]" />
+                    <span>Fila da Estação & Registros Recentes</span>
+                  </button>
+                </div>
+
+                <span className="text-[11px] font-mono text-[#0A1B2A]/60 px-2">
+                  {dashboardTab === 'analytics' ? 'Gráficos Recharts em Tempo Real' : `${records.length} dossiers enregistrés`}
+                </span>
+              </div>
+
+              {dashboardTab === 'analytics' ? (
+                <DashboardOverview
+                  roleType={roleType}
+                  title={`Tableau de Bord Stratégique · ${roleTitle}`}
+                  subtitle="Indicateurs de performance opérationnelle, cadences de saisie et conformité biométrique des stations CSU."
+                  onNavigateToRecords={() => setActiveModule('cadastros')}
+                />
+              ) : (
+                <>
+                  {/* Dynamic KPI Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-5 rounded-2xl bg-white border border-[#DCE4EE] shadow-sm space-y-1.5">
                   <div className="flex items-center justify-between text-xs text-[#0A1B2A]/60 font-semibold font-mono">
                     <span>DOSSIERS DU JOUR</span>
@@ -969,12 +1189,39 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
                   </table>
                 </div>
               </div>
+                </>
+              )}
             </div>
           )}
 
           {/* MODULE 2: CADASTROS / DOSSIERS CRUD */}
           {activeModule === 'cadastros' && (
             <div className="p-6 rounded-3xl bg-white border border-[#DCE4EE] shadow-sm space-y-6">
+              {/* Compliance & Privacy Banners */}
+              {roleType === 'auditor' && (
+                <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-900 flex items-center gap-3 text-xs">
+                  <FileCheck className="w-5 h-5 text-indigo-700 shrink-0" />
+                  <div>
+                    <strong>Régime d'Inspection & Contrôle d'État (Cour des Comptes / IGF) :</strong>
+                    <p className="text-[11px] text-indigo-800 mt-0.5">
+                      Ce profil est strictement habilité en mode consultation et audit. La création, la modification et la suppression de fiches d'enrôlement sont désactivées.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {(roleType === 'administrador_sistema' || roleType === 'admin_sys') && (
+                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 flex items-center gap-3 text-xs">
+                  <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0" />
+                  <div>
+                    <strong>Restriction d'Accès aux Données Personnelles Sensibles :</strong>
+                    <p className="text-[11px] text-amber-900 mt-0.5">
+                      En application du principe de séparation des pouvoirs techniques et des libertés civiles, l'accès administrateur direct aux identités est strictement consigné dans la piste d'audit HSM. Pour toute action de support, préférez la console d'infrastructure.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Header with Search, Filter & Actions */}
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#EAEFF5] pb-4">
                 <div>
@@ -1002,18 +1249,20 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
                     <span>Exporter CSV</span>
                   </button>
 
-                  {/* Create New Record */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      resetNewForm();
-                      setIsCreateModalOpen(true);
-                    }}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#E9CE7A] via-[#C9A227] to-[#9C7B1E] text-[#08243F] text-xs font-bold shadow transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Créer un Dossier</span>
-                  </button>
+                  {/* Create New Record (Hidden for Auditor) */}
+                  {roleType !== 'auditor' && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        resetNewForm();
+                        setIsCreateModalOpen(true);
+                      }}
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#E9CE7A] via-[#C9A227] to-[#9C7B1E] text-[#08243F] text-xs font-bold shadow transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Créer un Dossier</span>
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -1123,21 +1372,23 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
                               <Eye className="w-3.5 h-3.5" />
                             </button>
 
-                            {/* 2. Edit Record (Restricted or special for N2 / Supervisor) */}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (roleType === 'agente_n1' && rec.status === 'Certifié') {
-                                  alert('Règle de gouvernance : Les agents N1 ne peuvent pas modifier un dossier déjà validé. Transmettez la demande à un agent N2 ou Superviseur.');
-                                  return;
-                                }
-                                setEditingRecord({ ...rec });
-                              }}
-                              className="p-1.5 rounded-lg bg-[#C9A227]/15 text-[#9C7B1E] hover:bg-[#C9A227] hover:text-[#08243F] transition-colors cursor-pointer"
-                              title="Modifier / Rectifier les données"
-                            >
-                              <Edit3 className="w-3.5 h-3.5" />
-                            </button>
+                            {/* 2. Edit Record (Restricted for N1 and hidden for Auditor) */}
+                            {roleType !== 'auditor' && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (roleType === 'agente_n1' && rec.status === 'Certifié') {
+                                    alert('Règle de gouvernance : Les agents N1 ne peuvent pas modifier un dossier déjà validé. Transmettez la demande à un agent N2 ou Superviseur.');
+                                    return;
+                                  }
+                                  setEditingRecord({ ...rec });
+                                }}
+                                className="p-1.5 rounded-lg bg-[#C9A227]/15 text-[#9C7B1E] hover:bg-[#C9A227] hover:text-[#08243F] transition-colors cursor-pointer"
+                                title="Modifier / Rectifier les données"
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
 
                             {/* 3. Print Récépissé */}
                             <button
@@ -1813,6 +2064,31 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
               </div>
             </div>
           )}
+
+          {/* SPECIALIZED PROFILES 7-14 MODULE VIEWS */}
+          {/* PROFILE 7: GESTOR NACIONAL */}
+          {activeModule === 'gestor_nacional' && <NationalManagerView />}
+
+          {/* PROFILE 8: ADMINISTRADOR DE SISTEMA */}
+          {activeModule === 'sys_admin' && <SysAdminView />}
+
+          {/* PROFILE 9: DPO / OFICIAL DE PROTEÇÃO DE DADOS */}
+          {activeModule === 'dpo_privacy' && <DpoPrivacyView />}
+
+          {/* PROFILE 10: AUDITOR */}
+          {activeModule === 'auditoria' && <AuditorView />}
+
+          {/* PROFILE 11: GESTOR DE PROGRAMAS SOCIAIS */}
+          {activeModule === 'programas_sociais' && <SocialProgramsView />}
+
+          {/* PROFILE 12: OPERADOR DE BENEFÍCIOS */}
+          {activeModule === 'operador_beneficios' && <BenefitsOperatorView />}
+
+          {/* PROFILE 13: INTEGRADOR / DESENVOLVEDOR */}
+          {activeModule === 'dev_integrador' && <DeveloperIntegratorView />}
+
+          {/* PROFILE 14: SUPORTE TÉCNICO */}
+          {activeModule === 'suporte_tecnico' && <TechSupportView />}
         </main>
       </div>
 
