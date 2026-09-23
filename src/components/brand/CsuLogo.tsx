@@ -179,17 +179,17 @@ export const CsuLogo: React.FC<CsuLogoProps> = ({
   }
 
   return (
-    <div className={`inline-flex items-center gap-3.5 ${className}`}>
+    <div className={`inline-flex items-center gap-2.5 sm:gap-3.5 ${className}`}>
       {SealSVG}
-      <div className="flex flex-col justify-center leading-tight">
-        <span className="font-display font-extrabold tracking-tight text-white flex items-center gap-1.5 text-lg md:text-xl">
+      <div className="flex flex-col justify-center leading-tight min-w-0">
+        <span className="font-display font-extrabold tracking-tight text-white flex items-center gap-1.5 text-base sm:text-lg md:text-xl">
           CSU
           <span className="w-1.5 h-1.5 rounded-full bg-csu-gold-500 inline-block"></span>
-          <span className="font-semibold text-csu-silver-100 text-sm md:text-base tracking-normal">
+          <span className="font-semibold text-csu-silver-100 text-xs sm:text-sm md:text-base tracking-normal">
             RDC
           </span>
         </span>
-        <span className="font-display font-bold text-xs md:text-sm text-csu-silver-100 tracking-tight">
+        <span className="font-display font-bold text-[11px] sm:text-xs md:text-sm text-csu-silver-100 tracking-tight leading-snug">
           Recensement Socio-Économique Unifié
         </span>
       </div>

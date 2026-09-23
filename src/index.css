@@ -186,6 +186,15 @@ h1, h2, h3, h4, .font-display {
   animation: shimmer 2s infinite;
 }
 
+/* Utility to hide scrollbars while allowing smooth scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Accessibility: prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {

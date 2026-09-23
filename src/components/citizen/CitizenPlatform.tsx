@@ -338,10 +338,179 @@ export const CitizenPlatform: React.FC<CitizenPlatformProps> = ({
   // Unread notifications count
   const unreadCount = notifications.filter((n) => n.isUnread).length;
 
+  // Citizen Navigation Tabs Definition
+  const citizenTabs: {
+    id: TabType;
+    label: string;
+    shortLabel: string;
+    icon: React.ElementType;
+    badge?: number;
+  }[] = [
+    { id: 'overview', label: 'Vue d’Ensemble & Carte', shortLabel: 'Accueil', icon: CreditCard },
+    { id: 'profile', label: 'Profil & Biométrie', shortLabel: 'Profil', icon: User },
+    { id: 'benefits', label: 'Prestations & Aides', shortLabel: 'Aides', icon: Gift },
+    { id: 'services', label: 'Historique Services', shortLabel: 'Services', icon: History },
+    { id: 'corrections', label: 'Demande Rectification', shortLabel: 'Demandes', icon: FileEdit },
+    { id: 'data-sharing', label: 'Partage Données', shortLabel: 'Partage', icon: Share2 },
+    {
+      id: 'support',
+      label: 'Notifications & Suivi',
+      shortLabel: 'Alertes',
+      icon: Bell,
+      badge: unreadCount > 0 ? unreadCount : undefined,
+    },
+    { id: 'settings', label: 'Paramètres Gov', shortLabel: 'Réglages', icon: Settings },
+  ];
+
   return (
-    <div className="space-y-6">
-      {/* 1. CITIZEN GOV TOP HERO BAR */}
-      <div className="rounded-3xl bg-gradient-to-r from-[#08243F] via-[#0E3A66] to-[#0A2E52] border border-[#C9A227]/40 p-5 sm:p-7 shadow-xl text-white">
+    <div className="space-y-6 pb-28 lg:pb-6">
+      {/* ========================================================= */}
+      {/* 1. MOBILE FIXED / STICKY TOP APP BAR (App-like header)    */}
+      {/* ========================================================= */}
+      <div className="lg:hidden sticky top-0 z-30 bg-[#08243F]/95 backdrop-blur-xl border-b border-[#C9A227]/40 px-3.5 py-2.5 -mx-4 -mt-6 mb-4 flex items-center justify-between shadow-xl">
+        {/* Left: Brand & Title */}
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#14477E] to-[#08243F] border border-[#C9A227] flex items-center justify-center shadow-md shrink-0">
+            <span className="font-display font-extrabold text-[11px] text-[#D9B84A]">CSU</span>
+          </div>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <span className="font-display font-extrabold text-xs text-white">CSU Gov</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1E8E5A] animate-pulse" />
+              <span className="text-[9px] font-mono font-bold text-[#D9B84A] bg-[#0A2E52] px-1.5 py-0.2 rounded border border-[#C9A227]/30">
+                Niv. 3
+              </span>
+            </div>
+            <div className="text-[10px] text-[#DCE4EE]/70 font-medium truncate max-w-[150px]">
+              {fullName}
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Notification Bell & Quick QR Pass Button */}
+        <div className="flex items-center gap-2">
+          {/* Quick QR Presentation */}
+          <button
+            type="button"
+            onClick={() => setIsQrModalOpen(true)}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-[#E9CE7A] via-[#C9A227] to-[#9C7B1E] text-[#08243F] font-bold text-[11px] shadow active:scale-95 transition-transform cursor-pointer"
+            title="Présenter mon Pass QR"
+          >
+            <QrCode className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Pass QR</span>
+          </button>
+
+          {/* Notification Bell with Badge */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('support')}
+            className={`relative p-2 rounded-xl transition-all cursor-pointer ${
+              activeTab === 'support'
+                ? 'bg-[#C9A227] text-[#08243F]'
+                : 'bg-[#0E3A66] text-[#DCE4EE] hover:text-white'
+            }`}
+            title="Notifications & Messages"
+          >
+            <Bell className="w-4 h-4" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C0392B] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center border-2 border-[#08243F] animate-bounce">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+
+          {/* Mini Avatar */}
+          <div
+            onClick={() => setActiveTab('profile')}
+            className="w-7 h-7 rounded-xl overflow-hidden bg-[#0A2E52] border border-[#C9A227]/70 flex items-center justify-center cursor-pointer shrink-0"
+            title="Mon profil"
+          >
+            {citizenPhoto ? (
+              <img src={citizenPhoto} alt={fullName} className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-4 h-4 text-[#D9B84A]" />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* 2. MOBILE HERO SUMMARY BANNER                            */}
+      {/* ========================================================= */}
+      <div className="lg:hidden rounded-2xl bg-gradient-to-br from-[#08243F] via-[#0E3A66] to-[#0A2E52] border border-[#C9A227]/40 p-4 shadow-xl text-white space-y-3">
+        <div className="flex items-center gap-3.5">
+          <div className="relative shrink-0">
+            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-[#0A2E52] border-2 border-[#C9A227] flex items-center justify-center shadow-lg">
+              {citizenPhoto ? (
+                <img src={citizenPhoto} alt={fullName} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-[#14477E] to-[#08243F] flex flex-col items-center justify-center text-[#D9B84A]">
+                  <User className="w-7 h-7" />
+                  <span className="text-[7px] font-mono font-bold mt-0.5">BIO</span>
+                </div>
+              )}
+            </div>
+            <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#1E8E5A] border-2 border-[#08243F] flex items-center justify-center text-[8px] text-white">
+              ✓
+            </span>
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[9px] font-mono font-bold uppercase text-[#D9B84A] bg-[#08243F] px-1.5 py-0.5 rounded border border-[#C9A227]/40">
+                Niveau 3 Validé
+              </span>
+              <span className="text-[10px] text-[#1E8E5A] font-semibold flex items-center gap-0.5">
+                <ShieldCheck className="w-3 h-3" />
+                <span>Actif</span>
+              </span>
+            </div>
+            <h2 className="font-display font-extrabold text-base text-white truncate">
+              {fullName}
+            </h2>
+            <div className="text-[11px] text-[#DCE4EE]/80 flex items-center gap-1 truncate">
+              <MapPin className="w-3 h-3 text-[#C9A227] shrink-0" />
+              <span>Kalamu · Ménage N° 8412</span>
+            </div>
+          </div>
+        </div>
+
+        {/* CSU Chip & 1-tap QR presentation */}
+        <div className="pt-2 border-t border-[#14477E]/80 flex items-center justify-between gap-2">
+          <div className="bg-[#05182B] border border-[#C9A227]/40 rounded-xl px-3 py-1.5 flex items-center gap-2 min-w-0 flex-1">
+            <div className="min-w-0 flex-1">
+              <span className="text-[8px] font-mono text-[#D9B84A] block uppercase font-bold">
+                Numéro CSU
+              </span>
+              <span className="font-mono text-xs font-extrabold text-white tracking-wide truncate block">
+                {csuNumber}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={handleCopyCsu}
+              className="p-1.5 rounded-lg bg-[#0E3A66] text-[#D9B84A] shrink-0 active:scale-90"
+              title="Copier"
+            >
+              {isCopied ? <Check className="w-3.5 h-3.5 text-[#1E8E5A]" /> : <Copy className="w-3.5 h-3.5" />}
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsQrModalOpen(true)}
+            className="px-3 py-2 rounded-xl bg-gradient-to-r from-[#E9CE7A] via-[#C9A227] to-[#9C7B1E] text-[#08243F] font-bold text-xs shadow flex items-center gap-1.5 shrink-0 active:scale-95"
+          >
+            <QrCode className="w-4 h-4" />
+            <span>Pass QR</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* 3. DESKTOP CITIZEN TOP HERO BAR (Shown only on lg screens) */}
+      {/* ========================================================= */}
+      <div className="hidden lg:block rounded-3xl bg-gradient-to-r from-[#08243F] via-[#0E3A66] to-[#0A2E52] border border-[#C9A227]/40 p-5 sm:p-7 shadow-xl text-white">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           {/* Identity & Avatar */}
           <div className="flex items-center gap-4 sm:gap-5">
@@ -428,30 +597,16 @@ export const CitizenPlatform: React.FC<CitizenPlatformProps> = ({
           </div>
         </div>
 
-        {/* 2. CITIZEN NAVIGATION TABS */}
+        {/* Desktop Navigation Tabs */}
         <div className="mt-6 pt-5 border-t border-[#14477E]/80 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-          {[
-            { id: 'overview', label: 'Vue d’Ensemble & Carte', icon: CreditCard },
-            { id: 'profile', label: 'Profil & Photo Biométrique', icon: User },
-            { id: 'benefits', label: 'Prestations & Versements', icon: Gift },
-            { id: 'services', label: 'Historique des Services', icon: History },
-            { id: 'corrections', label: 'Demande de Correction', icon: FileEdit },
-            { id: 'data-sharing', label: 'Partage de Données', icon: Share2 },
-            {
-              id: 'support',
-              label: 'Notifications & Suivi',
-              icon: Bell,
-              badge: unreadCount > 0 ? unreadCount : undefined,
-            },
-            { id: 'settings', label: 'Paramètres Gov', icon: Settings },
-          ].map((tab) => {
+          {citizenTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setActiveTab(tab.id as TabType)}
+                onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                   isActive
                     ? 'bg-[#C9A227] text-[#08243F] font-bold shadow'
@@ -1656,6 +1811,59 @@ export const CitizenPlatform: React.FC<CitizenPlatformProps> = ({
           </div>
         </div>
       )}
+
+      {/* ========================================================= */}
+      {/* 5. MOBILE PREMIUM BOTTOM NAVIGATION DOCK (Horizontal scroll without scrollbar) */}
+      {/* ========================================================= */}
+      <nav
+        aria-label="Navigation mobile espace citoyen"
+        className="fixed bottom-0 left-0 right-0 z-40 bg-[#08243F]/95 backdrop-blur-2xl border-t border-[#C9A227]/40 shadow-[0_-10px_30px_rgba(0,0,0,0.6)] px-2 py-1.5 lg:hidden safe-area-pb"
+      >
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar scroll-smooth py-0.5 px-1 justify-start">
+          {citizenTabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`flex flex-col items-center justify-center min-w-[64px] px-2 py-1.5 rounded-xl transition-all relative shrink-0 cursor-pointer active:scale-90 ${
+                  isActive
+                    ? 'bg-gradient-to-t from-[#C9A227]/30 via-[#C9A227]/10 to-transparent text-[#E9CE7A] border border-[#C9A227]/60 shadow-[0_0_12px_rgba(201,162,39,0.35)]'
+                    : 'text-[#DCE4EE]/70 hover:text-white hover:bg-[#0E3A66]/40'
+                }`}
+              >
+                <div className="relative">
+                  <Icon
+                    className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform ${
+                      isActive ? 'scale-110 text-[#D9B84A]' : ''
+                    }`}
+                  />
+                  {tab.badge && (
+                    <span className="absolute -top-1 -right-2 w-3.5 h-3.5 bg-[#C0392B] text-white text-[8px] font-extrabold rounded-full flex items-center justify-center border border-[#08243F]">
+                      {tab.badge}
+                    </span>
+                  )}
+                </div>
+                <span
+                  className={`text-[10px] tracking-tight truncate mt-1 ${
+                    isActive ? 'font-bold text-[#D9B84A]' : 'font-medium'
+                  }`}
+                >
+                  {tab.shortLabel}
+                </span>
+                {isActive && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] absolute bottom-0.5 left-1/2 -translate-x-1/2" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 };

@@ -69,11 +69,11 @@ export const Header: React.FC<HeaderProps> = ({ currentLang, currentRoute, onNav
           ))}
         </nav>
 
-        {/* Action Button: Entrer */}
-        <div className="flex items-center gap-3">
+        {/* Action Button: Entrer (Desktop only, already in mobile menu) */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             onClick={() => onNavigate('#/entrar')}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-display font-bold text-sm bg-gradient-to-r from-[#E9CE7A] via-[#C9A227] to-[#9C7B1E] text-[#08243F] shadow-[0_4px_14px_rgba(201,162,39,0.35)] hover:shadow-[0_6px_20px_rgba(201,162,39,0.5)] hover:-translate-y-0.5 active:scale-95 transition-all duration-200 cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#C9A227]"
+            className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-xl font-display font-bold text-sm bg-gradient-to-r from-[#E9CE7A] via-[#C9A227] to-[#9C7B1E] text-[#08243F] shadow-[0_4px_14px_rgba(201,162,39,0.35)] hover:shadow-[0_6px_20px_rgba(201,162,39,0.5)] hover:-translate-y-0.5 active:scale-95 transition-all duration-200 cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#C9A227]"
             aria-label="Accéder à l'espace de connexion CSU"
           >
             <LogIn className="w-4 h-4 text-[#08243F]" />
@@ -83,11 +83,11 @@ export const Header: React.FC<HeaderProps> = ({ currentLang, currentRoute, onNav
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg text-[#DCE4EE] hover:text-white hover:bg-[#0A2E52] transition-colors"
+            className="lg:hidden p-2 rounded-xl text-[#DCE4EE] hover:text-white hover:bg-[#0A2E52] border border-transparent hover:border-[#14477E] transition-all cursor-pointer"
             aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu de navigation'}
             aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-6 h-6 text-[#C9A227]" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
