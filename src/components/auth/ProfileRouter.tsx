@@ -3,6 +3,7 @@ import { AdminProfile, RoleType } from '../../types';
 import { CsuLogo } from '../brand/CsuLogo';
 import { CsuIdCard } from '../common/CsuIdCard';
 import { CitizenPlatform } from '../citizen/CitizenPlatform';
+import { AdminPlatform } from '../admin/AdminPlatform';
 import {
   Shield,
   User,
@@ -265,189 +266,59 @@ export const ProfileRouter: React.FC<ProfileRouterProps> = ({
         </div>
       </div>
 
-      {/* 2. Top Header of the authenticated view */}
-      <div className="bg-[#0E3A66] text-white border-b border-[#14477E] py-6 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#E9CE7A] via-[#C9A227] to-[#9C7B1E] text-[#08243F] flex items-center justify-center font-extrabold shadow-lg shrink-0">
-              {selectedRoleType === 'citoyen' ? (
+      {/* 2. Platform Content Router based on Selected Role */}
+      {selectedRoleType === 'citoyen' ? (
+        <div className="bg-[#0E3A66] text-white border-b border-[#14477E] py-6 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#E9CE7A] via-[#C9A227] to-[#9C7B1E] text-[#08243F] flex items-center justify-center font-extrabold shadow-lg shrink-0">
                 <User className="w-8 h-8" />
-              ) : (
-                <Shield className="w-8 h-8" />
-              )}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#D9B84A] bg-[#08243F] px-2.5 py-0.5 rounded">
-                  {currentRoleDef.badge}
-                </span>
-                <span className="text-xs text-[#DCE4EE]/70 font-mono">
-                  Session certifiée RDC
-                </span>
               </div>
-              <h1 className="font-display font-extrabold text-2xl text-white mt-1">
-                {currentRoleDef.title}
-              </h1>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#D9B84A] bg-[#08243F] px-2.5 py-0.5 rounded">
+                    {currentRoleDef.badge}
+                  </span>
+                  <span className="text-xs text-[#DCE4EE]/70 font-mono">
+                    Session certifiée RDC
+                  </span>
+                </div>
+                <h1 className="font-display font-extrabold text-2xl text-white mt-1">
+                  {currentRoleDef.title}
+                </h1>
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={onNavigateHome}
-              className="px-4 py-2 rounded-xl bg-[#0A2E52] hover:bg-[#14477E] text-xs font-semibold text-[#DCE4EE] border border-[#14477E] transition-colors"
-            >
-              Voir le Portail Public
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={onNavigateHome}
+                className="px-4 py-2 rounded-xl bg-[#0A2E52] hover:bg-[#14477E] text-xs font-semibold text-[#DCE4EE] border border-[#14477E] transition-colors cursor-pointer"
+              >
+                Voir le Portail Public
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
 
-      {/* 3. Main Body */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-        {selectedRoleType === 'citoyen' ? (
+      {/* Main Content Area */}
+      {selectedRoleType === 'citoyen' ? (
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
           <CitizenPlatform
             citizenData={citizenData}
             onNavigateHome={onNavigateHome}
             onLogout={onLogout}
           />
-        ) : (
-          <>
-            {/* Role Description Card */}
-            <div className="p-6 rounded-2xl bg-white border border-[#DCE4EE] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <h3 className="font-display font-bold text-base text-[#08243F]">
-                  Attributions & Mission Officielle
-                </h3>
-                <p className="font-citizen text-xs text-[#0A1B2A]/75 max-w-2xl leading-relaxed">
-                  {currentRoleDef.description}
-                </p>
-              </div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#EAEFF5] border border-[#DCE4EE] text-xs font-mono text-[#0E3A66] shrink-0">
-                <Lock className="w-3.5 h-3.5 text-[#1E8E5A]" />
-                <span>Accréditation Souveraine</span>
-              </div>
-            </div>
-
-            {/* Dynamic Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {currentRoleDef.metrics.map((m, idx) => (
-                <div
-                  key={idx}
-                  className="p-6 rounded-2xl bg-white border border-[#DCE4EE] shadow-sm space-y-2"
-                >
-                  <span className="text-xs font-mono font-semibold text-[#0A1B2A]/60 block">
-                    {m.label}
-                  </span>
-                  <div className="font-display font-extrabold text-xl text-[#08243F]">
-                    {m.value}
-                  </div>
-                  <div className="flex items-center gap-1 text-[11px] text-[#1E8E5A] font-semibold">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Validé en temps réel</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* IF ROLE IS ADMIN: Operations Workspace */}
-            <div className="p-8 rounded-3xl bg-white border border-[#DCE4EE] shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAEFF5] pb-4">
-              <div>
-                <h3 className="font-display font-bold text-lg text-[#08243F]">
-                  Console d'Opérations · {currentRoleDef.title}
-                </h3>
-                <p className="text-xs text-[#0A1B2A]/70">
-                  Accès sous l’autorité du Secrétariat Général au CSU. Traçabilité des commandes en vigueur.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                {currentRoleDef.primaryActions.map((action, i) => (
-                  <button
-                    key={i}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#E9CE7A] via-[#C9A227] to-[#9C7B1E] text-[#08243F] text-xs font-bold shadow-sm hover:shadow transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    {action}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Operational Table / Queue Stub */}
-            <div className="space-y-3">
-              <span className="text-xs font-mono font-bold uppercase text-[#0E3A66]">
-                Dossiers récents en file de traitement :
-              </span>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs text-left">
-                  <thead className="bg-[#F6F8FB] text-[#08243F] uppercase font-mono font-bold border-y border-[#DCE4EE]">
-                    <tr>
-                      <th className="py-3 px-4">Identifiant Récépissé</th>
-                      <th className="py-3 px-4">Titulaire</th>
-                      <th className="py-3 px-4">Commune / Territoire</th>
-                      <th className="py-3 px-4">Programme Assigné</th>
-                      <th className="py-3 px-4">Statut</th>
-                      <th className="py-3 px-4 text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#EAEFF5]">
-                    <tr>
-                      <td className="py-3 px-4 font-mono font-bold text-[#0E3A66]">CSU-2026-9912-1044</td>
-                      <td className="py-3 px-4 font-semibold">Kasongo Ilunga Dieudonné</td>
-                      <td className="py-3 px-4">Kinshasa · Masina</td>
-                      <td className="py-3 px-4">Filets Sociaux Monétaires</td>
-                      <td className="py-3 px-4">
-                        <span className="px-2 py-0.5 rounded-full bg-[#1E8E5A]/10 text-[#1E8E5A] font-semibold">
-                          Certifié
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <button className="text-[#0E3A66] hover:text-[#C9A227] font-semibold underline">
-                          Inspecter
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-mono font-bold text-[#0E3A66]">CSU-2026-8841-3910</td>
-                      <td className="py-3 px-4 font-semibold">Mbuyi Kalonji Chantal</td>
-                      <td className="py-3 px-4">Kasai-Oriental · Mbuji-Mayi</td>
-                      <td className="py-3 px-4">Santé Maternité Gratuite</td>
-                      <td className="py-3 px-4">
-                        <span className="px-2 py-0.5 rounded-full bg-[#C77D0A]/10 text-[#C77D0A] font-semibold">
-                          En validation Plan B
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <button className="text-[#0E3A66] hover:text-[#C9A227] font-semibold underline">
-                          Inspecter
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-mono font-bold text-[#0E3A66]">CSU-2026-7731-8902</td>
-                      <td className="py-3 px-4 font-semibold">Balume Safari Emmanuel</td>
-                      <td className="py-3 px-4">Nord-Kivu · Goma</td>
-                      <td className="py-3 px-4">Assistance Déplacés de Conflit</td>
-                      <td className="py-3 px-4">
-                        <span className="px-2 py-0.5 rounded-full bg-[#1E8E5A]/10 text-[#1E8E5A] font-semibold">
-                          Enrôlement Mobile
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <button className="text-[#0E3A66] hover:text-[#C9A227] font-semibold underline">
-                          Inspecter
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </>
+        </main>
+      ) : (
+        <AdminPlatform
+          roleType={selectedRoleType}
+          roleTitle={currentRoleDef.title}
+          roleBadge={currentRoleDef.badge}
+          onLogout={onLogout}
+          onNavigateHome={onNavigateHome}
+        />
       )}
-    </main>
     </div>
   );
 };
