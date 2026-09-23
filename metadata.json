@@ -1,0 +1,6 @@
+{
+  "name": "CSU - Portail Officiel | RD Congo",
+  "description": "Portail officiel du Recensement Socio-Économique Unifié (CSU) de la République Démocratique du Congo. Accès citoyen et consoles administratives sécurisées.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
