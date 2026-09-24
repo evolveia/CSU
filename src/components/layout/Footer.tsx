@@ -23,9 +23,9 @@ export const Footer: React.FC<FooterProps> = ({ currentLang, onNavigate }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-[#0E3A66]">
           {/* Col 1 & 2: Brand & Sovereign Mission */}
           <div className="lg:col-span-2 space-y-4">
-            <CsuLogo variant="horizontal" size="md" />
+            <CsuLogo variant="horizontal" size="md" currentLang={currentLang} />
             <p className="text-xs text-[#DCE4EE]/75 leading-relaxed max-w-sm pt-2">
-              Le Recensement Socio-Économique Unifié (CSU) constitue le socle numérique de l'État congolais pour la justice sociale, l'identification universelle et l'attribution directe des aides publiques aux citoyens de la RDC.
+              {t.common.footerMission}
             </p>
             <div className="flex flex-col gap-2 pt-2">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0A2E52] border border-[#14477E]/60 text-xs text-[#EAEFF5]">

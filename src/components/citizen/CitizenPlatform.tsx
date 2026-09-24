@@ -1241,8 +1241,8 @@ export const CitizenPlatform: React.FC<CitizenPlatformProps> = ({
               },
               {
                 date: '02 Janvier 2026',
-                category: 'Recensement',
-                title: 'Passage de l’Agent Recenseur & Déclaration du Chef de Ménage',
+                category: 'Cadastre',
+                title: 'Passage de l’Agent de Cadastre & Déclaration du Chef de Ménage',
                 place: 'Quartier Matonge, Kalamu',
                 status: 'Clôturé',
                 badgeColor: 'bg-[#08243F]/10 text-[#08243F]',

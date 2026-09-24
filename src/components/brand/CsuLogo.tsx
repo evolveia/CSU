@@ -1,18 +1,41 @@
 import React from 'react';
+import { SupportedLang } from '../../types';
 
 interface CsuLogoProps {
   variant?: 'seal' | 'horizontal' | 'compact';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   showSubtitle?: boolean;
+  currentLang?: SupportedLang;
 }
+
+const CSU_LOCALIZED_NAMES: Record<SupportedLang, string> = {
+  FR: 'Cadastre Socio-Économique Unifié',
+  PT: 'Cadastro Socioeconômico Unificado',
+  EN: 'Unified Socio-Economic Cadastre',
+  ES: 'Catastro Socioeconómico Unificado',
+  ZH: '统一社会经济地籍与登记册',
+  LN: 'Cadastre Socio-Économique Unifié',
+  SW: 'Daftari la Kijamii na Kiuchumi Lililounganishwa',
+  KG: 'Cadastre Socio-Économique Unifié',
+  TSH: 'Cadastre Socio-Économique Unifié',
+};
 
 export const CsuLogo: React.FC<CsuLogoProps> = ({
   variant = 'horizontal',
   size = 'md',
   className = '',
   showSubtitle = true,
+  currentLang,
 }) => {
+  // Determine effective language
+  const effectiveLang: SupportedLang =
+    currentLang ||
+    (typeof window !== 'undefined'
+      ? (localStorage.getItem('csu_lang') as SupportedLang) || 'FR'
+      : 'FR');
+
+  const localizedSubtitle = CSU_LOCALIZED_NAMES[effectiveLang] || CSU_LOCALIZED_NAMES.FR;
   const getSealDimension = () => {
     switch (size) {
       case 'sm':
@@ -189,9 +212,11 @@ export const CsuLogo: React.FC<CsuLogoProps> = ({
             RDC
           </span>
         </span>
-        <span className="font-display font-bold text-[11px] sm:text-xs md:text-sm text-csu-silver-100 tracking-tight leading-snug">
-          Recensement Socio-Économique Unifié
-        </span>
+        {showSubtitle && (
+          <span className="font-display font-bold text-[11px] sm:text-xs md:text-sm text-csu-silver-100 tracking-tight leading-snug">
+            {localizedSubtitle}
+          </span>
+        )}
       </div>
     </div>
   );

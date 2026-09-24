@@ -7,7 +7,7 @@ export const cmsService = {
       title: "Qu'est-ce que le CSU ?",
       badge: "Registre Unique National",
       description:
-        "Le Recensement Socio-Économique Unifié (CSU) est l’infrastructure numérique d’État qui identifie, enregistre et certifie la situation de chaque foyer en République Démocratique du Congo. Il remplace le désordre des listes dispersées par un identifiant unique infalsifiable, garantissant l’accès direct aux prestations publiques sans intermédiaires.",
+        "Le Cadastre Socio-Économique Unifié (CSU) est l’infrastructure numérique d’État qui identifie, enregistre et certifie la situation de chaque foyer en République Démocratique du Congo. Il remplace le désordre des listes dispersées par un identifiant unique infalsifiable, garantissant l’accès direct aux prestations publiques sans intermédiaires.",
       quote: "Donner un nom juridique et une protection sociale concrète à chaque citoyen congolais.",
     };
   },

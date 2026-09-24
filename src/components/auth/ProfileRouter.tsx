@@ -120,7 +120,7 @@ const ROLE_DEFINITIONS: RoleDefinition[] = [
     description: 'Supervision de la couverture provinciale, déploiement des unités mobiles fluviales et terrestres dans les territoires reculés.',
     metrics: [
       { label: 'Territoires couverts', value: '14 / 14 territoires' },
-      { label: 'Citoyens recensés province', value: '1 240 500' },
+      { label: 'Citoyens cadastrés province', value: '1 240 500' },
       { label: 'Kits solaires déployés', value: '85 unités' },
     ],
     primaryActions: ['Plan de Déploiement Territorial', 'Valider dotations de matériel', 'Consulter Carte SIG Provinciale'],
@@ -131,7 +131,7 @@ const ROLE_DEFINITIONS: RoleDefinition[] = [
     badge: 'Gouvernance Stratégique',
     description: 'Vue d’ensemble macro-économique et sociale sur les 26 provinces, indicateurs d’impact et arbitrages gouvernementaux.',
     metrics: [
-      { label: 'Population nationale recensée', value: '14 842 910' },
+      { label: 'Population nationale cadastrée', value: '14 842 910' },
       { label: 'Déboursements sociaux totaux', value: '184 Mds CDF' },
       { label: 'Indice de couverture d’État', value: '88.2%' },
     ],

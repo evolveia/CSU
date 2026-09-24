@@ -11,7 +11,7 @@ export const countersService = {
     return [
       {
         id: 'citizens',
-        label: 'Citoyens recensés & certifiés',
+        label: 'Citoyens cadastrés & certifiés',
         value: 14842910,
         suffix: '+',
         subtext: 'Bénéficiaires actifs dans le Registre National',

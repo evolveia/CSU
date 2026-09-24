@@ -49,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({ currentLang, currentRoute, onNav
           onClick={() => handleLinkClick('#/', true)}
           className="text-left flex items-center gap-2 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A227] rounded-lg"
         >
-          <CsuLogo variant="horizontal" size="md" />
+          <CsuLogo variant="horizontal" size="md" currentLang={currentLang} />
         </button>
 
         {/* Desktop Nav Zone */}

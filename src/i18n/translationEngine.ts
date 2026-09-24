@@ -524,6 +524,39 @@ export const MODULES_I18N: Record<string, Partial<Record<SupportedLang, string>>
 
 // Global translation dictionary mapping common French/Portuguese phrases to all target languages
 export const PHRASE_BOOK: Record<string, Partial<Record<SupportedLang, string>>> = {
+  "Cadastre Socio-Économique Unifié": {
+    FR: "Cadastre Socio-Économique Unifié",
+    PT: "Cadastro Socioeconômico Unificado",
+    EN: "Unified Socio-Economic Cadastre",
+    ES: "Catastro Socioeconómico Unificado",
+    ZH: "统一社会经济地籍与登记册",
+    LN: "Cadastre Socio-Économique Unifié",
+    SW: "Daftari la Kijamii na Kiuchumi Lililounganishwa",
+    KG: "Cadastre Socio-Économique Unifié",
+    TSH: "Cadastre Socio-Économique Unifié"
+  },
+  "Recensement Socio-Économique Unifié": {
+    FR: "Cadastre Socio-Économique Unifié",
+    PT: "Cadastro Socioeconômico Unificado",
+    EN: "Unified Socio-Economic Cadastre",
+    ES: "Catastro Socioeconómico Unificado",
+    ZH: "统一社会经济地籍与登记册",
+    LN: "Cadastre Socio-Économique Unifié",
+    SW: "Daftari la Kijamii na Kiuchumi Lililounganishwa",
+    KG: "Cadastre Socio-Économique Unifié",
+    TSH: "Cadastre Socio-Économique Unifié"
+  },
+  "Le Cadastre Socio-Économique Unifié": {
+    FR: "Le Cadastre Socio-Économique Unifié",
+    PT: "O Cadastro Socioeconômico Unificado",
+    EN: "The Unified Socio-Economic Cadastre",
+    ES: "El Catastro Socioeconómico Unificado",
+    ZH: "统一社会经济地籍与登记册",
+    LN: "Cadastre Socio-Économique Unifié",
+    SW: "Daftari la Kijamii na Kiuchumi Lililounganishwa",
+    KG: "Cadastre Socio-Économique Unifié",
+    TSH: "Cadastre Socio-Économique Unifié"
+  },
   "Gouvernement de la RDC — Service officiel": {
     PT: "Governo da RDC — Serviço Oficial",
     EN: "Government of the DRC — Official Service",
@@ -784,6 +817,21 @@ export function applyDomTranslations(targetLang: SupportedLang) {
 
   const walk = (node: Node) => {
     if (node.nodeType === Node.TEXT_NODE) {
+      if (node.nodeValue) {
+        // Automatically normalize any remaining legacy occurrences of 'Recensement Socio-Économique Unifié'
+        if (node.nodeValue.includes('Recensement Socio-Économique Unifié')) {
+          node.nodeValue = node.nodeValue.replace(/Recensement Socio-Économique Unifié/g, 'Cadastre Socio-Économique Unifié');
+        }
+
+        // Substring replacement for Cadastre Socio-Économique Unifié across all languages
+        if (targetLang !== 'FR' && node.nodeValue.includes('Cadastre Socio-Économique Unifié')) {
+          const mapping = PHRASE_BOOK['Cadastre Socio-Économique Unifié'];
+          if (mapping && mapping[targetLang]) {
+            node.nodeValue = node.nodeValue.replace(/Cadastre Socio-Économique Unifié/g, mapping[targetLang]!);
+          }
+        }
+      }
+
       const text = node.nodeValue?.trim();
       if (text && text.length > 1) {
         // Check if there is a known translation

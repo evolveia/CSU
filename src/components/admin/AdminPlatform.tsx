@@ -1686,7 +1686,7 @@ export const AdminPlatform: React.FC<AdminPlatformProps> = ({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#EAEFF5] pb-3">
                 <div>
                   <h3 className="font-display font-bold text-lg text-[#08243F]">
-                    Système d'Information Géographique (SIG) & Bornes de Recensement
+                    Système d'Information Géographique (SIG) & Bornes de Cadastre
                   </h3>
                   <p className="text-xs text-[#0A1B2A]/70">
                     Localisation en direct des stations fixes et des unités mobiles déployées en République Démocratique du Congo
