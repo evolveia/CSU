@@ -69,7 +69,7 @@ export const translations: Record<SupportedLang, {
     },
     hero: {
       slide1: {
-        title: "Le cadastre qui donne un nom et des droits à chaque Congolais",
+        title: "Le cadastre qui donne un nom et un Droit à chaque Congolais",
         subtitle: "Avec le CSU, vous existez pour l'État : avantages sociaux, santé, école et protection arrivent à ceux qui en ont vraiment besoin — même sans document préalable.",
         ctaPrimary: "Je m'inscris",
         ctaSecondary: "Voir comment ça marche",
