@@ -6,6 +6,10 @@ import { CsuLogo } from '../brand/CsuLogo';
 import { CsuInteractiveMap } from '../common/CsuInteractiveMap';
 import { MOCK_STATIONS } from '../../services/stationsService';
 
+import heroSlideCitizenship from '../../assets/images/hero_slide_citizenship_1790172261311.jpg';
+import heroSlideStations from '../../assets/images/hero_slide_stations_1790172271889.jpg';
+import heroSlideDigital from '../../assets/images/hero_slide_digital_1790172283953.jpg';
+
 interface HeroCarouselProps {
   currentLang: SupportedLang;
   onNavigate: (route: string) => void;
@@ -20,9 +24,9 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ currentLang, onNavig
   const slidesCount = 3;
 
   const slideImages = [
-    '/src/assets/images/hero_slide_citizenship_1790172261311.jpg',
-    '/src/assets/images/hero_slide_stations_1790172271889.jpg',
-    '/src/assets/images/hero_slide_digital_1790172283953.jpg',
+    heroSlideCitizenship,
+    heroSlideStations,
+    heroSlideDigital,
   ];
 
   // Autoplay 7s with pause on hover/focus
@@ -77,7 +81,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ currentLang, onNavig
       {/* Dynamic Background Image per Slide */}
       {slideImages.map((imgSrc, idx) => (
         <div
-          key={imgSrc}
+          key={idx}
           className={`absolute inset-0 transition-opacity duration-1000 ease-in-out pointer-events-none ${
             currentSlide === idx ? 'opacity-100' : 'opacity-0'
           }`}
@@ -86,18 +90,18 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ currentLang, onNavig
             src={imgSrc}
             alt=""
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-center brightness-105 contrast-105"
           />
-          {/* Sovereign Navy Overlay with radial gold glow */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#08243F] via-[#08243F]/90 to-[#0A2E52]/80" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#08243F] via-transparent to-[#08243F]/70" />
+          {/* Transparent Gradient Overlays: increased transparency so background images are clearly visible */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#08243F]/85 via-[#08243F]/40 to-transparent sm:via-[#08243F]/30 sm:to-[#08243F]/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#08243F]/85 via-transparent to-[#08243F]/25" />
         </div>
       ))}
 
       {/* Ambient Lighting Blurs */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-1/4 w-[400px] h-[400px] rounded-full bg-[#14477E]/25 blur-[120px]" />
-        <div className="absolute bottom-0 right-10 w-80 h-80 rounded-full bg-[#C9A227]/15 blur-[100px]" />
+        <div className="absolute top-0 right-1/4 w-[400px] h-[400px] rounded-full bg-[#14477E]/10 blur-[140px]" />
+        <div className="absolute bottom-0 right-10 w-80 h-80 rounded-full bg-[#C9A227]/10 blur-[120px]" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full py-12 sm:py-16 relative z-10">
@@ -120,11 +124,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ currentLang, onNavig
                 <span>Registre National d'Identité Sociale · RDC</span>
               </div>
 
-              <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-white leading-[1.2] text-balance">
+              <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-white leading-[1.2] text-balance drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
                 {t.hero.slide1.title}
               </h1>
 
-              <p className="font-citizen text-sm sm:text-base md:text-lg text-[#DCE4EE]/90 leading-relaxed max-w-2xl">
+              <p className="font-citizen text-sm sm:text-base md:text-lg text-[#EAEFF5] leading-relaxed max-w-2xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
                 {t.hero.slide1.subtitle}
               </p>
 
@@ -216,11 +220,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ currentLang, onNavig
                 <span>842 Guichets Fixes & Unités Mobiles Solaires</span>
               </div>
 
-              <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-white leading-[1.2] text-balance">
+              <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-white leading-[1.2] text-balance drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
                 {t.hero.slide2.title}
               </h1>
 
-              <p className="font-citizen text-sm sm:text-base md:text-lg text-[#DCE4EE]/90 leading-relaxed max-w-2xl">
+              <p className="font-citizen text-sm sm:text-base md:text-lg text-[#EAEFF5] leading-relaxed max-w-2xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
                 {t.hero.slide2.subtitle}
               </p>
 
@@ -312,11 +316,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ currentLang, onNavig
                 <span>Portail Citoyen & Carte Virtuelle Sécurisée</span>
               </div>
 
-              <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-white leading-[1.2] text-balance">
+              <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-white leading-[1.2] text-balance drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
                 {t.hero.slide3.title}
               </h1>
 
-              <p className="font-citizen text-sm sm:text-base md:text-lg text-[#DCE4EE]/90 leading-relaxed max-w-2xl">
+              <p className="font-citizen text-sm sm:text-base md:text-lg text-[#EAEFF5] leading-relaxed max-w-2xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
                 {t.hero.slide3.subtitle}
               </p>
 
